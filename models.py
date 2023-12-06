@@ -4,8 +4,9 @@ db = SQLAlchemy()
 
 class Owner(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    espn_id = db.Column(db.String(50))
     name = db.Column(db.String(200))
-    email = db.Column(db.String(100))
+    email = db.Column(db.String(100), nullable=True)
     phone = db.Column(db.String(12), nullable=True)
 
 class Team(db.Model):

@@ -8,7 +8,6 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config.from_object('config.config.Config')
-print(app.config['SQLALCHEMY_DATABASE_URI'])
 
 db.init_app(app)
 migrate = Migrate(app, db)
