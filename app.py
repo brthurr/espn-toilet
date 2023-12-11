@@ -19,7 +19,7 @@ log_handler = logging.FileHandler(app.config['LOG_FILENAME'])
 log_handler.setLevel(logging.getLevelName(app.config['LOG_LEVEL']))
 
 # Set the formatter for the log handler
-formatter = logging.Formatter(app.config['LOG_FORMAT'])
+formatter = logging.Formatter(fmt=app.config['LOG_FORMAT'], datefmt=app.config['DATE_FORMAT'])
 log_handler.setFormatter(formatter)
 
 # Set the logger level and add the handler
@@ -71,6 +71,25 @@ def update_teams_command(year):
         click.echo(f"Unable to import teams: {str(e)}")
 
 app.cli.add_command(update_teams_command)
+
+@click.command(name='populate_tournament')
+@click.option('--year', required=True, type=int, help='The year for which you want to populate the tournament.')  # Define 'year' as a command-line argument of type int
+@with_appcontext
+def populate_tournament_command(year):
+    """
+    Run this custom command to update teams for the given year.
+
+    Args:
+        year (int): The year for which you want to populate the tournament.
+    """
+    try:
+        api_helper = ESPNAPIHelper(year)
+        api_helper.populate_tournament()
+        #click.echo(f"Teams imported successfully for {year}.")
+    except Exception as e:
+        click.echo(f"Unable to populate tournament: {str(e)}")
+
+app.cli.add_command(populate_tournament_command)
 
 if __name__ == '__main__':
     app.run()

@@ -21,10 +21,19 @@ class Game(db.Model):
     year = db.Column(db.Integer)
     week = db.Column(db.Integer)
     round = db.Column(db.Integer)
-    loser_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    winner_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    loser_score = db.Column(db.Integer)
-    winner_score = db.Column(db.Integer)
 
-    loser_team = db.relationship('Team', foreign_keys=[loser_team_id])
-    winner_team = db.relationship('Team', foreign_keys=[winner_team_id])
+    # Renaming these for clarity
+    team1_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    team2_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+
+    # Scores can be nullable and updated after the game
+    team1_score = db.Column(db.Integer, nullable=True)
+    team2_score = db.Column(db.Integer, nullable=True)
+
+    # Relationships
+    team1 = db.relationship('Team', foreign_keys=[team1_id])
+    team2 = db.relationship('Team', foreign_keys=[team2_id])
+
+    status = db.Column(db.String(50))  # e.g., 'Scheduled', 'Completed', etc.
+    # winner_team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
+

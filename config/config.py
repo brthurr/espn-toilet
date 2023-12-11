@@ -13,8 +13,10 @@ class Config:
 
     # Logging configuration
     LOG_FILENAME = 'logs/toilet-v2.log'
-    LOG_LEVEL = 'INFO'  # Adjust this based on your needs
-    LOG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(message)s"
+    LOG_LEVEL = 'DEBUG'  # Adjust this based on your needs
+    LOG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)s - %(message)s"
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 
     # ESPN API configuration
     ESPN_LEAGUE_ID = os.environ.get('LEAGUE_ID')
