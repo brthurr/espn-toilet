@@ -11,6 +11,7 @@ class Owner(db.Model):
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    espn_team_id = db.Column(db.Integer)
     owner_id = db.Column(db.Integer, db.ForeignKey('owner.id'))
     year = db.Column(db.Integer)
     name = db.Column(db.String(200))
