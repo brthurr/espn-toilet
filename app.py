@@ -164,16 +164,16 @@ app.cli.add_command(get_tb_teams_command)
 @with_appcontext
 def update_game_results_command(start_week, end_week, year):
     """
-    Run this custom command to get the TB tournament teams for the given year.
+    Run this custom command to update round scores for the given year.
 
     Args:
         start_week (int): The starting week for updating game results.
         end_week (int): The ending week for updating game results.
-        year (int): The year for which you want to return the tb participants.
+        year (int): The year for which you want to update game results.
     """
     try:
         api_helper = ESPNAPIHelper(year)
-        for week in range(start_week, end_week):
+        for week in range(start_week, end_week + 1):
             api_helper.update_game_results(week)
 
     except Exception as e:
@@ -182,6 +182,46 @@ def update_game_results_command(start_week, end_week, year):
 
 app.cli.add_command(update_game_results_command)
 
+
+@click.command(name="update_tournament")
+@click.option(
+    "--start-week",
+    required=True,
+    type=int,
+    help="The starting week for updating game results",
+)
+@click.option(
+    "--end-week",
+    required=True,
+    type=int,
+    help="The ending week for updating game results",
+)
+@click.option(
+    "--year",
+    required=True,
+    type=int,
+    help="The year for which you want to update game results",
+)
+@with_appcontext
+def update_tournament_command(start_week, end_week, year):
+    """
+    Run this custom command to update the tournament rounds for the given year.
+
+    Args:
+        start_week (int): The starting week for updating game results.
+        end_week (int): The ending week for updating game results.
+        year (int): The year for which you want to update game results.
+    """
+    try:
+        api_helper = ESPNAPIHelper(year)
+        for week in range(start_week, end_week + 1):
+            api_helper.update_tournament(week)
+
+    except Exception as e:
+        click.echo(f"Unable to update game results: {str(e)}")
+
+
+app.cli.add_command(update_tournament_command)
 
 if __name__ == "__main__":
     app.run()
