@@ -160,14 +160,17 @@ class ESPNAPIHelper:
             return
 
     def populate_tournament(self):
+        # Setting week to 14 to get standings for previous years
+        week = 14
+
         try:
             league = self.espn_api_call()
-            if league.year != datetime.now().year:
-                week = 14
-            else:
-                if league.current_week != 14:  # Last week of the regular season
+            if league.year == datetime.now().year:
+                if league.current_week <= 14:  # Last week of the regular season
                     current_app.logger.info("League is still in the regular season.")
                     return
+
+            # TODO: TEST WEEKLY STANDINGS
 
             league_standings = self.get_league_standings(league, week)
 
@@ -185,7 +188,6 @@ class ESPNAPIHelper:
                             current_app.logger.warning(
                                 f"Team '{team.team_name}' for year {self.year} not found in database."
                             )
-                print(team_ids_for_seeds)
                 # Create games for round 1 (seeds 7 vs 10 and 8 vs 9)
                 for match in [(7, 10), (8, 9)]:
                     team1_id = team_ids_for_seeds.get(match[0])
@@ -507,3 +509,44 @@ class ESPNAPIHelper:
                         next_round_game.status = "Scheduled"
 
                         db.session.commit()
+
+                elif week == 17:
+                    if game.team2_score > game.team1_score:
+                        loser_id = game.team1_id
+                        loser_seed = game.team1_seed
+                        winner_id = game.team2_id
+                        winner_seed = game.team2_seed
+                    else:
+                        loser_id = game.team2_id
+                        loser_seed = game.team2_seed
+                        winner_id = game.team1_id
+                        winner_seed = game.team1_seed
+
+                    print(
+                        f"Round: {game.round} Loser ID: {loser_id}, Loser Seed: {loser_seed}\n"
+                        f"Round: {game.round} Winner ID: {winner_id}, Winner Seed: {winner_seed}"
+                    )
+
+                    # Update the current game's loser_team_id
+                    game.loser_team_id = loser_id
+                    db.session.commit()
+
+    def get_current_round(self, year):
+        try:
+            league = self.espn_api_call()
+            if self.league is not None:
+                if self.league.year == datetime.now().year:
+                    week = self.league.current_week
+                    if week == 15:
+                        round = 1
+                    elif week == 16:
+                        round = 2
+                    elif week >= 17:
+                        round = 3
+                else:
+                    round = 3
+
+            return round
+        except Exception as e:
+            current_app.logger.error(f"Unable to fetch current year. {e}")
+            return

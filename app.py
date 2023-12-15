@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask.cli import with_appcontext
@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from helpers.migrate_from_django import import_owners
 from helpers.espn_api_helper import ESPNAPIHelper
-from models import db, Owner
+from models import db, Owner, Game, Team
 
 import click
 import logging
@@ -39,6 +39,38 @@ migrate = Migrate(app, db)
 @app.route("/")
 def hello_world():
     return "Hello World"
+
+
+@app.route("/toilet_bowl/<int:year>")
+def toilet_bowl(year):
+    # Determine playoff round per ESPN:
+    api_helper = ESPNAPIHelper(year)
+
+    current_round = api_helper.get_current_round(year)
+
+    # Query the Game table to get the game data
+    games = Game.query.filter_by(year=year).all()
+
+    # Query the Team table to get team names based on team IDs
+    team_names = {}
+    for game in games:
+        if game.team1_id is not None and game.team2_id is not None:
+            team1 = Team.query.get(game.team1_id)
+            team2 = Team.query.get(game.team2_id)
+            team_names[game.id] = {"team1_name": team1.name, "team2_name": team2.name}
+        if game.team1_id is not None and game.team2_id is None:
+            team1 = Team.query.get(game.team1_id)
+            team_names[game.id] = {"team1_name": team1.name, "team2_name": "TBD"}
+        if game.team2_id is not None and game.team1_id is None:
+            team2 = Team.query.get(game.team2_id)
+            team_names[game.id] = {"team1_name": team1.name, "team2_name": "TBD"}
+        if game.team1_id is None and game.team2_id is None:
+            team_names[game.id] = {"team1_name": "TBD", "team2_name": "TBD"}
+
+    # Pass the data to the template
+    return render_template(
+        "index.html", round=current_round, games=games, team_names=team_names, year=year
+    )
 
 
 @click.command(name="import_owners")
