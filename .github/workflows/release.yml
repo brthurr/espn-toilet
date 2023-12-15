@@ -53,8 +53,9 @@ jobs:
         pip install setuptools wheel
         python setup.py sdist bdist_wheel
     
-    - name: List built packages
-      run: ls dist/
+    - name: Find Wheel File
+      id: find_wheel
+      run: echo "::set-output name=wheel_path::$(ls dist/*.whl)"  
 
     - name: Create Release
       if: steps.compare_versions.outputs.version_increased == 'true'
@@ -75,6 +76,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: $(ls dist/*.whl)
-        asset_name: $(ls dist/*.whl | xargs -n 1 basename)
+        asset_path: ${{ steps.find_wheel.outputs.wheel_path }}
+        asset_name: espn_toilet-${{ env.NEW_VERSION }}-py3-none-any.whl
         asset_content_type: application/octet-stream
