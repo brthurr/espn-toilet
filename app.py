@@ -259,5 +259,6 @@ def update_tournament_command(start_week, end_week, year):
 
 app.cli.add_command(update_tournament_command)
 
-if __name__ == "__main__":
-    app.run()
+if app.config["ENVIRONMENT"] == "development":
+    if __name__ == "__main__":
+        app.run()

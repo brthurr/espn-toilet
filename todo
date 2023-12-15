@@ -1,3 +1,4 @@
 Migrate secrets to Azure Key Vault
 Flask-Admin for user authentication (only for admin, if possible)
 rename migrate_from_django to import_users
+integrate update_scores and update_tournament
