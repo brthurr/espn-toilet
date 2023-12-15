@@ -1,0 +1,74 @@
+name: Conditional Build and Release
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to match your default branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Get version from VERSION file
+      id: get_version
+      run: echo "NEW_VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+    - name: Get latest tag version
+      id: get_latest_tag
+      run: |
+        echo "LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_ENV
+
+    - name: Compare versions
+      id: compare_versions
+      run: |
+        if [ "$(printf '%s\n' "$LATEST_TAG" "$NEW_VERSION" | sort -V | head -n1)" != "$NEW_VERSION" ]; then
+          echo "::set-output name=version_increased::true"
+        else
+          echo "::set-output name=version_increased::false"
+        fi
+
+    - name: Create and push tag
+      if: steps.compare_versions.outputs.version_increased == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git tag $NEW_VERSION
+        git push origin $NEW_VERSION
+
+    - name: Build Source and Wheel Artifacts
+      if: steps.compare_versions.outputs.version_increased == 'true'
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel
+        python setup.py sdist bdist_wheel
+
+    - name: Create Release
+      if: steps.compare_versions.outputs.version_increased == 'true'
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.NEW_VERSION }}
+        release_name: Release ${{ env.NEW_VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      if: steps.compare_versions.outputs.version_increased == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/*.whl
+        asset_name: package-${{ env.NEW_VERSION }}.whl
+        asset_content_type: application/octet-stream
