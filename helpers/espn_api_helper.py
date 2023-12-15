@@ -138,14 +138,50 @@ class ESPNAPIHelper:
             dict: Dictionary object comprised of a week number and a list of ESPN team objects.
         """
 
-        standings_data = {}
-
         # Fetch league data
         try:
-            if week is None:
-                self.week = league.current_week
+            if not week or week <= 0 or week > league.current_week:
+                week = league.current_week
             else:
                 self.week = week
+
+            teams = league.teams
+
+            # Initialize a dictionary to hold team records
+            team_records = {
+                team.team_id: {
+                    "wins": 0,
+                    "losses": 0,
+                    "points_for": 0,
+                    "points_against": 0,
+                }
+                for team in teams
+            }
+
+            # Calculate wins, losses, points for, and points against for each team
+            for team in teams:
+                for i in range(week):
+                    opponent = team.schedule[i]
+                    team_points = team.scores[i]
+                    opponent_points = opponent.scores[i]
+                    if team_points > opponent_points:
+                        team_records[team.team_id]["wins"] += 1
+                    else:
+                        team_records[team.team_id]["losses"] += 1
+                    team_records[team.team_id]["points_for"] += team_points
+                    team_records[team.team_id]["points_against"] += opponent_points
+
+            # Sort teams based on wins, then points for, and then points against
+            standings_data = sorted(
+                teams,
+                key=lambda x: (
+                    team_records[x.team_id]["wins"],
+                    team_records[x.team_id]["losses"],
+                    team_records[x.team_id]["points_for"],
+                    team_records[x.team_id]["points_against"],
+                ),
+                reverse=True,
+            )
 
             standings = league.standings_weekly(week)
 
@@ -169,6 +205,7 @@ class ESPNAPIHelper:
                     return
 
             league_standings = self.get_league_standings(league, week)
+            print(league_standings)
 
             if league_standings:
                 # Fetch and store team IDs for seeds 7 through 12
