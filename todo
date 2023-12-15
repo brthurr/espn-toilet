@@ -1,0 +1,2 @@
+Migrate secrets to Azure Key Vault
+Flask-Admin for user authentication (only for admin, if possible)

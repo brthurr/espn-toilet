@@ -102,8 +102,6 @@ class ESPNAPIHelper:
         Updates an existing team or adds a new team to the database.
         """
 
-        # TODO: Update seed (additional method?)
-
         try:
             team = Team.query.filter_by(owner_id=owner.espn_id, year=self.year).first()
             if team is None:
@@ -169,8 +167,6 @@ class ESPNAPIHelper:
                 if league.current_week <= 14:  # Last week of the regular season
                     current_app.logger.info("League is still in the regular season.")
                     return
-
-            # TODO: TEST WEEKLY STANDINGS
 
             league_standings = self.get_league_standings(league, week)
 

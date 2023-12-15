@@ -2,16 +2,22 @@ import os
 from dotenv import load_dotenv
 
 # Specify the path to the .env file relative to the root directory
-dotenv_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
 
 class Config:
     # Flask-related configuration options
+    ENVIRONMENT = os.environ.get("ENVIRONMENT")
     SECRET_KEY = os.environ.get("SECRET_KEY")
+    FLASK_APP = os.environ.get("FLASK_APP")
+    FLASK_DEBUG = os.environ.get("FLASK_DEBUG")
+    STATIC_FOLDER = "static"
+    TEMPLATES_FOLDER = "templates"
+
+    # Database
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    STATIC_FOLDER = "static"
 
     # Logging configuration
     LOG_FILENAME = "logs/toilet-v2.log"
