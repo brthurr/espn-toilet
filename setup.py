@@ -5,7 +5,7 @@ with open("VERSION") as version_file:
     version = version_file.read().strip()
 
 # Read the requirements from a file
-with open("VERSION") as requirements_file:
+with open("requirements.txt") as requirements_file:
     requirements = requirements_file.read().splitlines()
 
 setup(
@@ -17,7 +17,8 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/brthurr/espn-toilet",
-    packages=find_packages(),
+    package_dir={"": "src"},  # Specify the package directory
+    packages=find_packages(where="src"),  # Find packages in src
     install_requires=requirements,
     classifiers=[
         # Classifiers help users find your project by categorizing it.

@@ -10,9 +10,13 @@ from models import db, Owner, Game, Team
 
 import click
 import logging
+import os
 
 app = Flask(__name__)
 app.config.from_object("config.config.Config")
+
+if not os.path.isfile(app.config["LOG_FILENAME"]):
+    open((app.config["LOG_FILENAME"]), "w").close()
 
 # Configure the logger
 log_handler = logging.FileHandler(app.config["LOG_FILENAME"])

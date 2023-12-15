@@ -20,7 +20,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Logging configuration
-    LOG_FILENAME = "logs/toilet-v2.log"
+    LOG_FILENAME = "logs/espn-toilet.log"
     LOG_LEVEL = "DEBUG"  # Adjust this based on your needs
     LOG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)s - %(message)s"
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
