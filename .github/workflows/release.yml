@@ -33,9 +33,9 @@ jobs:
       id: compare_versions
       run: |
         if [ "$(printf '%s\n' "$LATEST_TAG" "$NEW_VERSION" | sort -V | head -n1)" != "$NEW_VERSION" ]; then
-          echo "{name=version_increased}={true}" >> $GITHUB_OUTPUT
+          echo "version_increased=true" >> $GITHUB_OUTPUT
         else
-        echo "{name=version_increased}={false}" >> $GITHUB_OUTPUT
+        echo "version_increased=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Create and push tag
@@ -55,7 +55,7 @@ jobs:
     
     - name: Find Wheel File
       id: find_wheel
-      run: echo "{wheel_path}={$(ls dist/*.whl)}"  >> $GITHUB_OUTPUT
+      run: echo "wheel_path=$(ls dist/*.whl)"  >> $GITHUB_OUTPUT
 
     - name: Create Release
       if: steps.compare_versions.outputs.version_increased == 'true'
