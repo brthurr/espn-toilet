@@ -61,17 +61,31 @@ def toilet_bowl(year):
         if game.team1_id is not None and game.team2_id is not None:
             team1 = Team.query.get(game.team1_id)
             team2 = Team.query.get(game.team2_id)
-            team_names[game.id] = {"team1_name": team1.name, "team2_name": team2.name}
+            team_names[game.id] = {
+                "team1_name": team1.name,
+                "team2_name": team2.name,
+                "team1_score": game.team1_score,
+                "team2_score": game.team2_score,
+            }
         if game.team1_id is not None and game.team2_id is None:
             team1 = Team.query.get(game.team1_id)
-            team_names[game.id] = {"team1_name": team1.name, "team2_name": "TBD"}
+            team_names[game.id] = {
+                "team1_name": team1.name,
+                "team2_name": "TBD",
+                "team1_score": game.team1_score,
+            }
         if game.team2_id is not None and game.team1_id is None:
             team2 = Team.query.get(game.team2_id)
-            team_names[game.id] = {"team1_name": team1.name, "team2_name": "TBD"}
+            team_names[game.id] = {
+                "team1_name": "TBD",
+                "team2_name": team2.name,
+                "team1_score": game.team_2.score,
+            }
         if game.team1_id is None and game.team2_id is None:
             team_names[game.id] = {"team1_name": "TBD", "team2_name": "TBD"}
 
     # Pass the data to the template
+    print("Rendering index.html")
     return render_template(
         "index.html", round=current_round, games=games, team_names=team_names, year=year
     )
@@ -209,6 +223,7 @@ def update_game_results_command(start_week, end_week, year):
     """
     try:
         api_helper = ESPNAPIHelper(year)
+        print(start_week, end_week)
         for week in range(start_week, end_week + 1):
             api_helper.update_game_results(week)
 

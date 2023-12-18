@@ -46,16 +46,17 @@
                                                 
                                                 {{ team_names[game.id]['team1_name'] }}<span class="score">
                                                 
-                                                {% if team1_score %}
-                                                    {{ game.team1_score }}
+                                                {% if team_names[game.id]['team1_score'] %}
+                                                    {{ team_names[game.id]['team1_score'] }}
                                                 {% endif %}</span></li>
                     <li class="team team-bottom">   {% if game.team2_seed %}
                                                         {{ game.team2_seed }}
                                                     {% endif %}
+                                                    
                                                     {{ team_names[game.id]['team2_name'] }}<span class="score">
                                                     
-                                                    {% if team2_score %}
-                                                        {{ game.team2_score }}
+                                                    {% if team_names[game.id]['team2_score'] %}
+                                                        {{ team_names[game.id]['team2_score'] }}
                                                     {% endif %}</span></li>
                 </ul>
                 {% endif %}
@@ -75,7 +76,7 @@
                                                 
                                                 {{ team_names[game.id]['team1_name'] }}<span class="score">
                                                 
-                                                {% if team1_score %}
+                                                {% if game.team1_score %}
                                                     {{ game.team1_score }}
                                                 {% endif %}</span></li>
                     <li class="team team-bottom">   {% if game.team2_seed %}
@@ -83,7 +84,7 @@
                                                     {% endif %}
                                                     {{ team_names[game.id]['team2_name'] }}<span class="score">
                                                     
-                                                    {% if team2_score %}
+                                                    {% if game.team2_score %}
                                                         {{ game.team2_score }}
                                                     {% endif %}</span></li>
                 </ul>
@@ -106,16 +107,16 @@
                                                 
                                                 {{ team_names[game.id]['team1_name'] }}<span class="score">
                                                 
-                                                {% if team1_score %}
-                                                    {{ game.team1_score }}
+                                                {% if team_names[game.id]['team1_score'] %}
+                                                    {{ team_names[game.id]['team1_score'] }}
                                                 {% endif %}</span></li>
                     <li class="team team-bottom">   {% if game.team2_seed %}
                                                         {{ game.team2_seed }}
                                                     {% endif %}
                                                     {{ team_names[game.id]['team2_name'] }}<span class="score">
                                                     
-                                                    {% if team2_score %}
-                                                        {{ game.team2_score }}
+                                                    {% if team_names[game.id]['team2_score'] %}
+                                                        {{ team_names[game.id]['team2_score'] }}
                                                     {% endif %}</span></li>
                 </ul>
                 {% endif %}

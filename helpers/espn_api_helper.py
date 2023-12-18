@@ -169,7 +169,6 @@ class ESPNAPIHelper:
                     return
 
             league_standings = self.get_league_standings(league, week)
-            print(league_standings)
 
             if league_standings:
                 # Fetch and store team IDs for seeds 7 through 12
@@ -338,6 +337,7 @@ class ESPNAPIHelper:
             self.league = self.espn_api_call()
             if self.league is not None:
                 team_id_to_team = {team.team_id: team for team in self.league.teams}
+                print(team_id_to_team)
                 current_week = self.league.nfl_week
 
                 for tb_team in self.get_tb_teams():
@@ -364,8 +364,21 @@ class ESPNAPIHelper:
                                 continue
 
                             try:
-                                team_score_1 = team_1.scores[week - 1]
-                                team_score_2 = team_2.scores[week - 1]
+                                for boxscore in self.league.box_scores(week):
+                                    if boxscore.home_team != 0:
+                                        if boxscore.home_team.team_id == team_1.team_id:
+                                            team_score_1 = int(boxscore.home_score)
+                                        elif (
+                                            boxscore.home_team.team_id == team_2.team_id
+                                        ):
+                                            team_score_2 = int(boxscore.home_score)
+                                    if boxscore.away_team != 0:
+                                        if boxscore.away_team.team_id == team_1.team_id:
+                                            team_score_1 = int(boxscore.away_score)
+                                        elif (
+                                            boxscore.away_team.team_id == team_2.team_id
+                                        ):
+                                            team_score_2 = int(boxscore.away_score)
                             except IndexError:
                                 current_app.logger.error(
                                     f"Index out of range for week {week}"
