@@ -12,9 +12,9 @@ import click
 import logging
 import os
 
+
 app = Flask(__name__)
 app.config.from_object("config.config.Config")
-
 if not os.path.isfile(app.config["LOG_FILENAME"]):
     open((app.config["LOG_FILENAME"]), "w").close()
 
@@ -32,10 +32,12 @@ log_handler.setFormatter(formatter)
 app.logger.setLevel(logging.getLevelName(app.config["LOG_LEVEL"]))
 app.logger.addHandler(log_handler)
 
-# Don't output to console
-"""for handler in app.logger.handlers:
-    app.logger.removeHandler(handler)
-"""
+# Don't output to console if in production
+if app.config["ENVIRONMENT"] == "development":
+    for handler in app.logger.handlers:
+        app.logger.removeHandler(handler)
+
+
 db.init_app(app)
 migrate = Migrate(app, db)
 
@@ -85,7 +87,6 @@ def toilet_bowl(year):
             team_names[game.id] = {"team1_name": "TBD", "team2_name": "TBD"}
 
     # Pass the data to the template
-    print("Rendering index.html")
     return render_template(
         "index.html", round=current_round, games=games, team_names=team_names, year=year
     )
@@ -223,7 +224,6 @@ def update_game_results_command(start_week, end_week, year):
     """
     try:
         api_helper = ESPNAPIHelper(year)
-        print(start_week, end_week)
         for week in range(start_week, end_week + 1):
             api_helper.update_game_results(week)
 

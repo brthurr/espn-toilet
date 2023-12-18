@@ -337,7 +337,6 @@ class ESPNAPIHelper:
             self.league = self.espn_api_call()
             if self.league is not None:
                 team_id_to_team = {team.team_id: team for team in self.league.teams}
-                print(team_id_to_team)
                 current_week = self.league.nfl_week
 
                 for tb_team in self.get_tb_teams():
@@ -454,7 +453,7 @@ class ESPNAPIHelper:
                             loser_id = game.team2_id
                             loser_seed = game.team2_seed
 
-                    print(
+                    current_app.logger.info(
                         f"Round: {game.round} Loser ID: {loser_id}, Loser Seed: {loser_seed}"
                     )
 
@@ -495,7 +494,7 @@ class ESPNAPIHelper:
                         winner_id = game.team1_id
                         winner_seed = game.team1_seed
 
-                    print(
+                    current_app.logger.info(
                         f"Round: {game.round} Loser ID: {loser_id}, Loser Seed: {loser_seed}\n"
                         f"Round: {game.round} Winner ID: {winner_id}, Winner Seed: {winner_seed}"
                     )
@@ -532,7 +531,7 @@ class ESPNAPIHelper:
                         winner_id = game.team1_id
                         winner_seed = game.team1_seed
 
-                    print(
+                    current_app.logger.info(
                         f"Round: {game.round} Loser ID: {loser_id}, Loser Seed: {loser_seed}\n"
                         f"Round: {game.round} Winner ID: {winner_id}, Winner Seed: {winner_seed}"
                     )
