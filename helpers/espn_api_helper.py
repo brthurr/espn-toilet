@@ -365,17 +365,25 @@ class ESPNAPIHelper:
                             try:
                                 for boxscore in self.league.box_scores(week):
                                     if boxscore.home_team != 0:
-                                        if boxscore.home_team.team_id == team_1.team_id:
+                                        if (
+                                            boxscore.home_team.team_id
+                                            == tb_team["team1_espn_team_id"]
+                                        ):
                                             team_score_1 = int(boxscore.home_score)
                                         elif (
-                                            boxscore.home_team.team_id == team_2.team_id
+                                            boxscore.home_team.team_id
+                                            == tb_team["team2_espn_team_id"]
                                         ):
                                             team_score_2 = int(boxscore.home_score)
                                     if boxscore.away_team != 0:
-                                        if boxscore.away_team.team_id == team_1.team_id:
+                                        if (
+                                            boxscore.away_team.team_id
+                                            == tb_team["team1_espn_team_id"]
+                                        ):
                                             team_score_1 = int(boxscore.away_score)
                                         elif (
-                                            boxscore.away_team.team_id == team_2.team_id
+                                            boxscore.away_team.team_id
+                                            == tb_team["team2_espn_team_id"]
                                         ):
                                             team_score_2 = int(boxscore.away_score)
                             except IndexError:
@@ -386,10 +394,30 @@ class ESPNAPIHelper:
                             current_app.logger.info(f"Team 1 Score: {team_score_1}")
                             current_app.logger.info(f"Team 2 Score: {team_score_2}")
 
+                            if team_score_1 == team_score_2:
+                                current_app.logger.info(
+                                    f"Score TIED. Going to bench points..."
+                                )
+                                team_score_1 = int(
+                                    self.get_total_team_score(
+                                        self.league, team_1.team_id, week
+                                    )
+                                )
+                                team_score_2 = int(
+                                    self.get_total_team_score(
+                                        self.league, team_2.team_id, week
+                                    )
+                                )
+                                current_app.logger.info(
+                                    f"Team 1 Total Score: {team_score_1}"
+                                )
+                                current_app.logger.info(
+                                    f"Team 2 Total Score: {team_score_2}"
+                                )
+
                             game_1 = Game.query.filter_by(
                                 year=self.year,
                                 week=week,
-                                # round=tb_team["round"],
                                 team1_id=tb_team["team1_id"],
                             ).first()
 
@@ -432,7 +460,9 @@ class ESPNAPIHelper:
 
     def update_tournament(self, week):
         # Get round games for the current week
-        round_games = Game.query.filter_by(week=week, status="Completed")
+        round_games = Game.query.filter_by(
+            week=week, year=self.year, status="Completed"
+        )
 
         for game in round_games:
             if game.loser_team_id is None:
@@ -465,18 +495,24 @@ class ESPNAPIHelper:
                     # if week == 15:
                     if loser_seed in [7, 10]:
                         next_round_game = Game.query.filter_by(
-                            week=16, team1_seed=11
+                            week=16, year=self.year, team1_seed=11
                         ).first()
                         if next_round_game:
+                            current_app.logger.info(
+                                f"Next Round Opponent: {next_round_game.team1_id}"
+                            )
                             next_round_game.team2_id = loser_id
                             next_round_game.team2_seed = loser_seed
                             next_round_game.status = "Scheduled"
                             db.session.commit()
                     elif loser_seed in [8, 9]:
                         next_round_game = Game.query.filter_by(
-                            week=16, team1_seed=12
+                            week=16, year=self.year, team1_seed=12
                         ).first()
                         if next_round_game:
+                            current_app.logger.info(
+                                f"Next Round Opponent: {next_round_game.team1_id}"
+                            )
                             next_round_game.team2_id = loser_id
                             next_round_game.team2_seed = loser_seed
                             next_round_game.status = "Scheduled"
@@ -503,7 +539,9 @@ class ESPNAPIHelper:
                     game.loser_team_id = loser_id
                     db.session.commit()
 
-                    next_round_game = Game.query.filter_by(week=17).first()
+                    next_round_game = Game.query.filter_by(
+                        year=self.year, week=17
+                    ).first()
 
                     if (
                         next_round_game.team1_id is None
@@ -558,4 +596,26 @@ class ESPNAPIHelper:
             return round
         except Exception as e:
             current_app.logger.error(f"Unable to fetch current year. {e}")
+            return
+
+    def get_total_team_score(self, league, team_espn_team_id, week):
+        try:
+            if league is not None:
+                score = 0
+                boxscores = league.box_scores(week)
+                for bs in boxscores:
+                    if not isinstance(bs.home_team, int):
+                        if bs.home_team.team_id == team_espn_team_id:
+                            for player in bs.home_lineup:
+                                score += player.points
+                            return score
+                    if not isinstance(bs.away_team, int):
+                        if bs.away_team.team_id == team_espn_team_id:
+                            for player in bs.away_lineup:
+                                score += player.points
+                            return score
+
+        except Exception as e:
+            tb = traceback.format_exc()
+            current_app.logger.error(f"Unable to fetch total team score. {e}\n{tb}")
             return
