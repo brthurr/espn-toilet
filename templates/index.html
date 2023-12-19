@@ -25,11 +25,27 @@
 
 <h1 id="headline">Toilet Bowl</h1>
 
-<p class="year"><i class="fa fa-star"></i> {{ year }} <i class="fa fa-star"></i></p>
+<p class="heroYearStyle"><i class="fa fa-star"></i>
+
+    <select id="yearSelect" class="heroYearStyle", onchange="changeYear()">
+    {% for y in years %}
+    <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+    {% endfor %}
+
+</select>
+
+<i class="fa fa-star"></i></p>
 
 <p>The Worst of the Worst</p>
 </div>
 </header>
+
+<script>
+    function changeYear() {
+        var selectedYear = document.getElementById('yearSelect').value;
+        window.location.href = '/toilet_bowl/' + selectedYear;
+    }
+</script>
 
 <section id="bracket">
 <div class="container">

@@ -49,6 +49,10 @@ def hello_world():
 
 @app.route("/toilet_bowl/<int:year>")
 def toilet_bowl(year):
+    # Determine years available for drop-down box in template.
+    years = Game.query.with_entities(Game.year).distinct().all()
+    years = [y[0] for y in years]
+
     # Determine playoff round per ESPN:
     api_helper = ESPNAPIHelper(year)
 
@@ -88,7 +92,12 @@ def toilet_bowl(year):
 
     # Pass the data to the template
     return render_template(
-        "index.html", round=current_round, games=games, team_names=team_names, year=year
+        "index.html",
+        round=current_round,
+        games=games,
+        team_names=team_names,
+        year=year,
+        years=years,
     )
 
 
