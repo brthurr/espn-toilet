@@ -319,8 +319,6 @@ body {
   color: #3F915F;
 }
 
-
-
 @media screen and (min-width: 981px) and (max-width: 1099px) {
   .container {
     margin: 0 1%;
@@ -346,7 +344,32 @@ body {
     margin: 5px 0 10px;
   }
 
+  .hero .heroYearStyle {
+    background: no-repeat #000;
+    color: #fff;
+    letter-spacing: 20px;
+    font-size: 34px;
+    margin: -25px 0 25px;
+    border: none;
+  }
+
+  .hero .heroYearStyle i {
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .hero h1 {
+    font-family: 'Holtwood One SC', serif;
+    font-weight: normal;
+    font-size: 5.4em;
+    margin: 1em auto 2em;
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
 }
+
 
 @media screen and (max-width: 980px) {
   .container {
@@ -385,6 +408,15 @@ body {
 
   .hero p {
     font-size: 1em;
+  }
+
+  .hero .heroYearStyle {
+    background: no-repeat #000;
+    color: #fff;
+    letter-spacing: 20px;
+    font-size: 34px;
+    margin: -10px 0 25px;
+    border: none;
   }
 }
 
