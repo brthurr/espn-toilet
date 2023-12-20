@@ -4,8 +4,12 @@ from flask_admin.contrib.sqla import ModelView
 from flask.cli import with_appcontext
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from helpers.migrate_from_django import import_owners
-from helpers.db_helper import import_schedule, return_week_dates, get_current_round
+from helpers.db_helper import (
+    import_schedule,
+    return_week_dates,
+    get_current_round,
+    import_owners,
+)
 from helpers.espn_api_helper import ESPNAPIHelper
 from models import db, Owner, Game, Team, Schedule
 
