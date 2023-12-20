@@ -51,7 +51,13 @@
 <div class="container">
         <div class="split split-one">
             <div class="round round-one {% if round == 1 %} current {% endif %}" > <!-- START ROUND ONE 	-->
-                <div class="round-details">Round 1<br/><span class="date">NFL Week 15</span>
+                <div class="round-details">Round 1<br/><span class="date">
+                {% for game in schedule %}
+                    {% if game.week == 15 %}
+                        {{ game.early_game }} - {{ game.late_game }}
+                    {% endif %}
+                {% endfor %}
+                </span>
                 </div>			                
                 {% for game in games %}
                 {% if game.week == 15 %}
@@ -81,7 +87,13 @@
         </div>
         <div class="split split-one">
             <div class="round round-two {% if round == 2 %} current {% endif %}"> <!-- START ROUND TWO 	-->
-                <div class="round-details">semifinals <br/><span class="date">NFL Week 16</span>
+                <div class="round-details">semifinals <br/><span class="date">
+                    {% for game in schedule %}
+                        {% if game.week == 16 %}
+                            {{ game.early_game }} - {{ game.late_game }}
+                        {% endif %}
+                    {% endfor %}
+                </span>
                 </div>		
                 {% for game in games %}
                 {% if game.week == 16 %}
@@ -111,8 +123,13 @@
         <div class="split split-two">
             <div class="round round-three {% if round == 3 %} current {% endif %}"> <!-- START ROUND THREE 	-->
                 <i class="fa-solid fa-toilet"></i><br>
-                <div class="round-details">championship<br />
-                    <span class="date">NFL Week 17</span>
+                <div class="round-details">championship<br /><span class="date">
+                    {% for game in schedule %}
+                        {% if game.week == 17 %}
+                            {{ game.early_game }} - {{ game.late_game }}
+                        {% endif %}
+                    {% endfor %}
+                </span>
                 </div>
                 {% for game in games %}
                 {% if game.week == 17 %}

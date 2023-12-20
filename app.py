@@ -5,7 +5,7 @@ from flask.cli import with_appcontext
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from helpers.migrate_from_django import import_owners
-from helpers.db_helper import import_schedule
+from helpers.db_helper import import_schedule, return_week_dates, get_current_round
 from helpers.espn_api_helper import ESPNAPIHelper
 from models import db, Owner, Game, Team, Schedule
 
@@ -56,10 +56,17 @@ def toilet_bowl(year):
     years = Game.query.with_entities(Game.year).distinct().all()
     years = [y[0] for y in years]
 
-    # Determine playoff round per ESPN:
-    api_helper = ESPNAPIHelper(year)
+    formatted_schedule = return_week_dates(year, db, Schedule)
+    print(formatted_schedule)
 
-    current_round = api_helper.get_current_round(year)
+    for scheduled_game in formatted_schedule:
+        week_start = (scheduled_game["week_start"],)
+        current_round = get_current_round(scheduled_game)
+
+    # Determine playoff round per ESPN:
+    # api_helper = ESPNAPIHelper(year)
+
+    # current_round = api_helper.get_current_round(year)
 
     # Query the Game table to get the game data
     games = Game.query.filter_by(year=year).all()
@@ -101,6 +108,7 @@ def toilet_bowl(year):
         team_names=team_names,
         year=year,
         years=years,
+        schedule=formatted_schedule,
     )
 
 

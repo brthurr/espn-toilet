@@ -44,5 +44,6 @@ class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer, nullable=False)
     week = db.Column(db.Integer, nullable=False)
+    week_start = db.Column(db.Integer, nullable=False)
     early_game_date_time = db.Column(db.String(50), nullable=False)
     late_game_date_time = db.Column(db.String(50), nullable=False)

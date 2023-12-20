@@ -578,26 +578,6 @@ class ESPNAPIHelper:
                     game.loser_team_id = loser_id
                     db.session.commit()
 
-    def get_current_round(self, year):
-        try:
-            league = self.espn_api_call()
-            if self.league is not None:
-                if self.league.year == datetime.now().year:
-                    week = self.league.current_week
-                    if week == 15:
-                        round = 1
-                    elif week == 16:
-                        round = 2
-                    elif week >= 17:
-                        round = 3
-                else:
-                    round = 3
-
-            return round
-        except Exception as e:
-            current_app.logger.error(f"Unable to fetch current year. {e}")
-            return
-
     def get_total_team_score(self, league, team_espn_team_id, week):
         try:
             if league is not None:
