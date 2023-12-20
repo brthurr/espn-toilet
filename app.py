@@ -5,8 +5,9 @@ from flask.cli import with_appcontext
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from helpers.migrate_from_django import import_owners
+from helpers.db_helper import import_schedule
 from helpers.espn_api_helper import ESPNAPIHelper
-from models import db, Owner, Game, Team
+from models import db, Owner, Game, Team, Schedule
 
 import click
 import logging
@@ -123,6 +124,30 @@ def import_owners_command(owners_file):
 
 
 app.cli.add_command(import_owners_command)
+
+
+@click.command(name="import_schedule")
+@click.option(
+    "--year",
+    "year",
+    required=True,
+    type=int,
+    help="Year to scrape and import schedule",
+)
+@with_appcontext
+def import_schedule_command(year):
+    """
+    Run this custom command to import schedule from a scraped PFF dataframe.
+
+    Args:
+        year (int): year to scrape and import information
+
+    """
+    import_schedule(year, db, Schedule)
+    click.echo("Schedule imported successfully.")
+
+
+app.cli.add_command(import_schedule_command)
 
 
 @click.command(name="update_teams")
