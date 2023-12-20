@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask.cli import with_appcontext
@@ -12,6 +12,7 @@ from models import db, Owner, Game, Team, Schedule
 import click
 import logging
 import os
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -45,7 +46,8 @@ migrate = Migrate(app, db)
 
 @app.route("/")
 def hello_world():
-    return "Hello World"
+    current_year = datetime.now().year
+    return redirect(f"http://www.americasffl.com/toilet_bowl/{current_year}", code=302)
 
 
 @app.route("/toilet_bowl/<int:year>")
