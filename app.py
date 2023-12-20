@@ -47,7 +47,7 @@ migrate = Migrate(app, db)
 @app.route("/")
 def hello_world():
     current_year = datetime.now().year
-    return redirect(f"http://www.americasffl.com/toilet_bowl/{current_year}", code=302)
+    return redirect(f"/toilet_bowl/{current_year}", code=302)
 
 
 @app.route("/toilet_bowl/<int:year>")
