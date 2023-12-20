@@ -1,6 +1,6 @@
 Migrate secrets to Azure Key Vault
 Flask-Admin for user authentication (only for admin, if possible)
-rename migrate_from_django to import_users
 integrate update_scores and update_tournament
 determine refresh() function and how it is used.
 Use FLASK_ENV (learn how to set)
+modify seeding for larger leagues
