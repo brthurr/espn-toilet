@@ -323,7 +323,7 @@ class ESPNAPIHelper:
             )
             return
 
-    def update_game_results(self, week):
+    def update_game_results(self, league, week):
         """
         Update the toilet bowl game results for the given weeks.
 
@@ -334,7 +334,7 @@ class ESPNAPIHelper:
             None
         """
         try:
-            self.league = self.espn_api_call()
+            self.league = league
             if self.league is not None:
                 team_id_to_team = {team.team_id: team for team in self.league.teams}
                 current_week = self.league.nfl_week

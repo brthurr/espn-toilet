@@ -28,12 +28,14 @@ def update_game_results_job():
     # Define the time bounds
     start_time = time(19, 0)  # 7 PM
     end_time = time(23, 0)  # 11 PM
+    
+    days_to_run = [0, 3, 4, 5, 6]  # List of days to run your code
 
     # Check if current time is within the desired timeframe
     if (
         (current_day == 3 and current_time >= start_time)
         or (current_day == 0 and current_time <= end_time)
-        or (0 < current_day < 3)
+        or (current_day in days_to_run)
     ):
         try:
             # Get the current year

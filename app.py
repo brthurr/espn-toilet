@@ -272,8 +272,9 @@ def update_game_results_command(start_week, end_week, year):
     """
     try:
         api_helper = ESPNAPIHelper(year)
+        league = api_helper.espn_api_call()
         for week in range(start_week, end_week + 1):
-            api_helper.update_game_results(week)
+            api_helper.update_game_results(league, week)
 
     except Exception as e:
         click.echo(f"Unable to update game results: {str(e)}")
