@@ -1,10 +1,23 @@
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.interval import IntervalTrigger
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.combining import OrTrigger
 import subprocess
+import logging
+import os
 
 scheduler = BackgroundScheduler(daemon=True)
+
+# Logging configuration
+LOG_FILENAME = "./logs/scheduler.log"
+LOG_LEVEL = "DEBUG"  # Adjust this based on your needs
+LOG_FORMAT = "%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)s - %(message)s"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+if not os.path.isfile(LOG_FILENAME):
+    open(LOG_FILENAME, "a").close()
+
+logging.basicConfig(level=LOG_LEVEL, filename=LOG_FILENAME, filemode='a', format=LOG_FORMAT, datefmt=DATE_FORMAT)
 
 
 def update_game_results_job():
@@ -39,10 +52,11 @@ def update_game_results_job():
 
             # Run the Flask command as a subprocess
             subprocess.run(command, check=True)
+            logging.info(f"Update game results command ran successfully.")
 
         except Exception as e:
             # Handle any exceptions that may occur during the command execution
-            print(f"Error running Flask command: {e}")
+            logging.error(f"Error running Flask command: {e}")
     else:
         return
 
@@ -60,14 +74,18 @@ def update_tournament_command_job():
             f"--year={current_year}",
         ]
         subprocess.run(command, check=True)
+        logging.info(f"Update tournament command ran successfully.")
     except Exception as e:
-        print(f"Error running Flask command: {e}")
+        logging.error(f"Error running Flask command: {e}")
 
 
 # Schedule for update_game_results_job
 scheduler.add_job(
     update_game_results_job,
-    trigger=CronTrigger(hour="0-23", day_of_week="thu, fri, sat, sun, mon"),
+    trigger=OrTrigger([
+        CronTrigger(hour="19-23", minute="*/5", day_of_week="thu, mon"),
+        CronTrigger(hour="11-23", minute="*/5", day_of_week="fri, sat, sun"),
+    ])
 )
 
 scheduler.add_job(
