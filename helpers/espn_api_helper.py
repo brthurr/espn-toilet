@@ -352,8 +352,8 @@ class ESPNAPIHelper:
                         ):
                             espn_id_1 = tb_team["team1_espn_team_id"]
                             espn_id_2 = tb_team["team2_espn_team_id"]
-                            current_app.logger.info(f"Team 1 ESPN ID: {espn_id_1}")
-                            current_app.logger.info(f"Team 2 ESPN ID: {espn_id_2}")
+                            #current_app.logger.info(f"Team 1 ESPN ID: {espn_id_1}")
+                            #current_app.logger.info(f"Team 2 ESPN ID: {espn_id_2}")
 
                             # Access specific teams by their IDs using the dictionary
                             team_1 = team_id_to_team[espn_id_1]
@@ -391,8 +391,8 @@ class ESPNAPIHelper:
                                     f"Index out of range for week {week}"
                                 )
                                 continue
-                            current_app.logger.info(f"Team 1 Score: {team_score_1}")
-                            current_app.logger.info(f"Team 2 Score: {team_score_2}")
+                            #current_app.logger.info(f"Team 1 Score: {team_score_1}")
+                            #current_app.logger.info(f"Team 2 Score: {team_score_2}")
 
                             if team_score_1 == team_score_2:
                                 current_app.logger.info(
