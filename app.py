@@ -61,16 +61,11 @@ def toilet_bowl(year):
     years = [y[0] for y in years]
 
     formatted_schedule = return_week_dates(year, db, Schedule)
-    print(formatted_schedule)
 
+    # Determine playoff round
     for scheduled_game in formatted_schedule:
         week_start = (scheduled_game["week_start"],)
         current_round = get_current_round(scheduled_game)
-
-    # Determine playoff round per ESPN:
-    # api_helper = ESPNAPIHelper(year)
-
-    # current_round = api_helper.get_current_round(year)
 
     # Query the Game table to get the game data
     games = Game.query.filter_by(year=year).all()

@@ -105,19 +105,18 @@ def get_current_round(scheduled_game):  # year was old argument
         # if self.league is not None:
         if scheduled_game is not None:
             if scheduled_game["year"] == datetime.now().year:
+                today = datetime.now()
                 week = scheduled_game["week_start"]
-                print(week)
                 one_week_out = week + timedelta(weeks=1)
                 two_weeks_out = week + timedelta(weeks=2)
-                if week >= one_week_out:
+                if week <= today:
                     round = 1
-                elif week < one_week_out <= two_weeks_out:
+                if today <= one_week_out:
                     round = 2
-                elif week >= two_weeks_out:
+                if today <= two_weeks_out:
                     round = 3
             else:
                 round = 3
-        print(round)
         return round
     except Exception as e:
         current_app.logger.error(f"Unable to fetch current round. {e}")
